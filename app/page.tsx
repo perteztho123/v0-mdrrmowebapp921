@@ -6,6 +6,7 @@ import NewsSection from "@/components/news-section"
 import CalendarSection from "@/components/calendar-section"
 import MapSection from "@/components/map-section"
 import GallerySection from "@/components/gallery-section"
+import EmergencyProcedures from "@/components/emergency-procedures"
 import { EmergencyModalManager } from "@/components/emergency-modal-manager"
 
 export const metadata: Metadata = {
@@ -23,8 +24,10 @@ export default function HomePage() {
         <AboutSection />
         <NewsSection />
         <CalendarSection />
-        <MapSection />
-        <GallerySection />
+          <GallerySection />
+          {/* Interactive Community Map Section */}
+          <MapSection />
+        <EmergencyProcedures />
       </main>
     </EmergencyModalManager>
   )

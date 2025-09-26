@@ -1,11 +1,31 @@
+"use client";
 import React, { useState, useEffect } from 'react';
+
+type Weather = {
+  temp: number;
+  description: string;
+  icon: string;
+  date: string;
+};
+
+type ForecastDay = {
+  day: string;
+  date: string;
+  weather: Array<{
+    icon: string;
+    description: string;
+  }>;
+  main: {
+    temp: number;
+  };
+};
 import { Cloud, Sun, CloudRain, Wind, Droplets, Eye, Thermometer, Calendar } from 'lucide-react';
 
 export default function WeatherSection() {
-  const [forecast, setForecast] = useState([]);
-  const [currentWeather, setCurrentWeather] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const [forecast, setForecast] = useState<ForecastDay[]>([]);
+  const [currentWeather, setCurrentWeather] = useState<Weather | null>(null);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string | null>(null);
 
   const location = "Pio Duran, Albay";
   const lat = 13.0293;
@@ -19,61 +39,60 @@ export default function WeatherSection() {
         const response = await fetch(
           `https://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${lon}&appid=${apiKey}&units=metric`
         );
-        
         if (!response.ok) {
           throw new Error('Failed to fetch weather data');
         }
-        
         const data = await response.json();
-        
         // Get current weather (first item in forecast)
         const current = data.list[0];
         setCurrentWeather({
           temp: Math.round(current.main.temp),
           description: current.weather[0].description,
           icon: current.weather[0].icon,
-          date: new Date(current.dt * 1000).toLocaleDateString('en-US', { 
-            weekday: 'short', 
-            month: 'short', 
-            day: 'numeric' 
-          })
+          date: new Date(current.dt * 1000).toLocaleDateString('en-US', {
+            weekday: 'short',
+            month: 'short',
+            day: 'numeric',
+          }),
         });
-        
         // Process 5-day forecast (get one item per day)
-        const dailyForecast = [];
+        const dailyForecast: ForecastDay[] = [];
         const today = new Date().toDateString();
-        
         for (let i = 0; i < data.list.length; i++) {
           const item = data.list[i];
           const itemDate = new Date(item.dt * 1000);
-          
           // Skip today and get one item per day
-          if (itemDate.toDateString() !== today && 
-              (dailyForecast.length === 0 || 
-               itemDate.getDate() !== new Date(dailyForecast[dailyForecast.length - 1].dt * 1000).getDate())) {
+          if (
+            itemDate.toDateString() !== today &&
+            (dailyForecast.length === 0 ||
+              itemDate.getDate() !==
+                new Date(data.list[i - 1]?.dt * 1000).getDate())
+          ) {
             dailyForecast.push({
-              ...item,
               day: itemDate.toLocaleDateString('en-US', { weekday: 'short' }),
-              date: itemDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })
+              date: itemDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }),
+              weather: item.weather,
+              main: item.main,
             });
-            
             if (dailyForecast.length === 5) break;
           }
         }
-        
         setForecast(dailyForecast);
         setLoading(false);
       } catch (err) {
-        setError(err.message);
+        if (err instanceof Error) {
+          setError(err.message);
+        } else {
+          setError('Unknown error');
+        }
         setLoading(false);
       }
     };
-
     fetchWeatherData();
   }, []);
 
-  const getWeatherIcon = (iconCode) => {
-    const iconMap = {
+  const getWeatherIcon = (iconCode: string) => {
+    const iconMap: { [key: string]: React.ComponentType<{ className?: string }> } = {
       '01d': Sun,
       '01n': Sun,
       '02d': Cloud,
@@ -93,18 +112,17 @@ export default function WeatherSection() {
       '50d': Eye,
       '50n': Eye
     };
-    
     const IconComponent = iconMap[iconCode] || Cloud;
     return <IconComponent className="w-6 h-6" />;
   };
 
-  const getWeatherColor = (description) => {
+  const getWeatherColor = (description: string) => {
     if (description.includes('rain')) return 'text-blue-600 border-blue-200';
     if (description.includes('cloud')) return 'text-gray-600 border-gray-200';
     return 'text-cyan-600 border-cyan-200';
   };
 
-  const getWeatherBg = (description) => {
+  const getWeatherBg = (description: string) => {
     if (description.includes('rain')) return 'bg-blue-50';
     if (description.includes('cloud')) return 'bg-gray-50';
     return 'bg-cyan-50';

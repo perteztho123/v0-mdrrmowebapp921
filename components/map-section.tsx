@@ -18,7 +18,16 @@ const MapContainer = dynamic(() => import("./map-container"), {
 
 export default function MapSection() {
   // State for toggle switches
-  const [layers, setLayers] = useState({
+
+  type LayerName =
+    | "evacuationCenters"
+    | "governmentFacilities"
+    | "schools"
+    | "markets"
+    | "transportation"
+    | "hazardZones"
+
+  const [layers, setLayers] = useState<Record<LayerName, boolean>>({
     evacuationCenters: true,
     governmentFacilities: true,
     schools: true,
@@ -28,7 +37,7 @@ export default function MapSection() {
   })
 
   // Toggle layer visibility
-  const toggleLayer = (layerName: string) => {
+  const toggleLayer = (layerName: LayerName) => {
     setLayers((prev) => ({
       ...prev,
       [layerName]: !prev[layerName],

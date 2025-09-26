@@ -1,147 +1,150 @@
 "use client"
 
-import { useState, useCallback, useEffect } from "react"
-import Image from "next/image"
+import React, { useState } from 'react';
+import Link from 'next/link';
+import { GalleryHorizontal, Video } from 'lucide-react';
 
-export default function GallerySection() {
-  const [galleryImages, setGalleryImages] = useState([])
+const GallerySection = () => {
+  const [galleryImages, setGalleryImages] = useState(false);
 
-  // Fetch images from Cloudinary
-  useEffect(() => {
-    const fetchCloudinaryImages = async () => {
-      try {
-        // In a real implementation, you would use your Cloudinary credentials
-        // For demo purposes, we'll use a sample Cloudinary account
-        const cloudName = process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME || 'dedcmctqk'
-        
-        // Create images with portrait aspect ratio (3:4)
-        const images = Array.from({ length: 15 }, (_, i) => ({
-          id: i + 1,
-          src: `https://res.cloudinary.com/${cloudName}/image/upload/w_300,h_400,c_fill/sample.jpg?v=${i}`,
-          alt: `MDRRMO community activity ${i + 1} - disaster preparedness training and community engagement`,
-          title: `Community Activity ${i + 1}`,
-        }))
-        
-        // Duplicate images for seamless infinite scroll
-        const duplicatedImages = [...images, ...images, ...images]
-        setGalleryImages(duplicatedImages)
-      } catch (error) {
-        // Fallback to Unsplash with portrait aspect ratio
-        const fallbackImages = Array.from({ length: 15 }, (_, i) => ({
-          id: i + 1,
-          src: `https://images.unsplash.com/photo-${1500000000000 + (i % 10)}?w=300&h=400&fit=crop&auto=format`,
-          alt: `MDRRMO community activity ${i + 1} - disaster preparedness training and community engagement`,
-          title: `Community Activity ${i + 1}`,
-        }))
-        
-        // Duplicate images for seamless infinite scroll
-        const duplicatedImages = [...fallbackImages, ...fallbackImages, ...fallbackImages]
-        setGalleryImages(duplicatedImages)
-      }
-    }
+  // Gallery items data
+  const galleryItems = [
+    { id: 1, title: "Community Event", category: "event" },
+    { id: 2, title: "Training Session", category: "training" },
+    { id: 3, title: "Disaster Prep", category: "prep" },
+    { id: 4, title: "Volunteer Work", category: "volunteer" },
+    { id: 5, title: "Emergency Drill", category: "drill" },
+    { id: 6, title: "Community Outreach", category: "outreach" },
+    { id: 7, title: "First Aid", category: "aid" },
+    { id: 8, title: "Evacuation", category: "evacuation" },
+    { id: 9, title: "Relief Distribution", category: "relief" },
+    { id: 10, title: "Awareness Campaign", category: "campaign" }
+  ];
 
-    fetchCloudinaryImages()
-  }, [])
+  // Duplicate items for seamless looping
+  const duplicatedItems = [...galleryItems, ...galleryItems, ...galleryItems];
 
   return (
-    <section id="gallery" className="bg-blue-900 py-16" aria-labelledby="gallery-heading">
-      <div className="container mx-auto px-4">
-        <div className="text-center mb-12 max-w-4xl mx-auto">
-          <h1 id="gallery-heading" className="section-title text-3xl md:text-4xl font-bold text-yellow-500 mb-4">
-            Our Activities and Events
-          </h1>
-          <p className="text-lg md:text-xl text-blue-100 mb-8">
-            Photos from our disaster preparedness activities and community events
-          </p>
+    <div className="flex flex-col justify-center items-center bg-blue-950">
+      <style jsx global>{`
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+        
+        body {
+          font-family: 'Poppins', sans-serif;
+          overflow-x: hidden;
+        }
+        
+        .compact-scrolling-wrapper {
+          animation: scroll 30s linear infinite;
+          width: fit-content;
+        }
+        
+        .compact-scrolling-wrapper:hover {
+          animation-play-state: paused;
+        }
+        
+        @keyframes scroll {
+          0% {
+            transform: translateX(0);
+          }
+          100% {
+            transform: translateX(-50%);
+          }
+        }
+        
+        .compact-gallery-item {
+          transition: all 0.3s ease;
+        }
+        
+        .compact-gallery-item:hover {
+          transform: scale(1.03);
+          box-shadow: 0 8px 20px rgba(1, 33, 132, 0.25);
+        }
+        
+        .compact-fade-overlay {
+          position: absolute;
+          top: 0;
+          bottom: 0;
+          width: 60px;
+          z-index: 10;
+          pointer-events: none;
+        }
+        
+        .compact-fade-left {
+          left: 0;
+          background: linear-gradient(to right, white, transparent);
+        }
+        
+        .compact-fade-right {
+          right: 0;
+          background: linear-gradient(to left, white, transparent);
+        }
+      `}</style>
+
+      {/* Compact Widget Container */}
+      <div 
+        className="w-full shadow-xl overflow-hidden"
+        style={{ maxWidth: 'auto', height: '480px' }}
+      >
+        {/* Header Section */}
+        <div className="flex flex-col">
+          {/* Top yellow line */}
+          <div className="h-2 w-full bg-yellow-500" />
+
+          {/* Main content */}
+          <div className="bg-[#012184] text-white p-6 flex flex-col items-center justify-center">
+            <h2 className="text-3xl md:text-4xl font-bold text-yellow-500 mb-2 text-center drop-shadow-lg">
+              Our Activities & Events
+            </h2>
+            <p className="text-[#fff] text-sm text-center">
+              Photos from disaster preparedness activities
+            </p>
+          </div>
         </div>
 
-        {/* Horizontal Infinite Scrolling Gallery with Portrait Images */}
-        <div className="relative overflow-hidden py-8">
-          <div className="animate-scroll flex whitespace-nowrap">
-            {galleryImages.map((image, index) => (
-              <div
-                key={`${image.id}-${index}`}
-                className="gallery-item group relative inline-block mx-3 w-60 h-80 rounded-xl overflow-hidden shadow-lg focus-within:ring-2 focus-within:ring-yellow-500 focus-within:ring-offset-2 hover:scale-105 transition-transform duration-300"
-                role="img"
-                aria-label={image.alt}
+        {/* Infinity Scrolling Gallery */}
+        <div 
+          className="relative bg-white p-4"
+          style={{ height: '300px' }}
+          onMouseEnter={() => setGalleryImages(true)}
+          onMouseLeave={() => setGalleryImages(false)}
+        >
+          <div className="compact-fade-overlay compact-fade-left"></div>
+          <div className="compact-fade-overlay compact-fade-right"></div>
+          <div className={`compact-scrolling-wrapper flex space-x-4 h-full items-center ${galleryImages ? 'opacity-90' : 'opacity-100'} transition-opacity duration-300`}>
+            {duplicatedItems.map((item, index) => (
+              <div 
+                key={`${item.id}-${index}`} 
+                className="compact-gallery-item flex-shrink-0 w-48 h-70 rounded-lg overflow-hidden shadow-md"
               >
-                <Image
-                  src={image.src || "/placeholder.svg"}
-                  alt={image.alt}
-                  fill
-                  sizes="300px"
-                  className="object-cover transition-transform duration-300 group-hover:scale-110"
-                  loading="lazy"
+                <img 
+                  src={`https://placehold.co/200x200/${index % 2 === 0 ? '012184/ffffff' : 'fcd530/012184'}?text=${encodeURIComponent(item.title)}`} 
+                  alt={item.title} 
+                  className="w-full h-full object-cover"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                  <div className="absolute bottom-4 left-4 right-4">
-                    <h3 className="text-white font-semibold text-sm">{image.title}</h3>
-                  </div>
-                </div>
               </div>
             ))}
           </div>
-          
-          {/* Duplicate for seamless loop */}
-          <div className="animate-scroll2 flex whitespace-nowrap absolute top-0 left-0">
-            {galleryImages.map((image, index) => (
-              <div
-                key={`duplicate-${image.id}-${index}`}
-                className="gallery-item group relative inline-block mx-3 w-60 h-80 rounded-xl overflow-hidden shadow-lg hover:scale-105 transition-transform duration-300"
-                role="img"
-                aria-label={image.alt}
-              >
-                <Image
-                  src={image.src || "/placeholder.svg"}
-                  alt={image.alt}
-                  fill
-                  sizes="300px"
-                  className="object-cover transition-transform duration-300 group-hover:scale-110"
-                  loading="lazy"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                  <div className="absolute bottom-4 left-4 right-4">
-                    <h3 className="text-white font-semibold text-sm">{image.title}</h3>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
         </div>
 
-        <style jsx>{`
-          @keyframes scroll {
-            0% {
-              transform: translateX(0);
-            }
-            100% {
-              transform: translateX(-100%);
-            }
-          }
-          
-          @keyframes scroll2 {
-            0% {
-              transform: translateX(100%);
-            }
-            100% {
-              transform: translateX(0);
-            }
-          }
-          
-          .animate-scroll {
-            animation: scroll 40s linear infinite;
-          }
-          
-          .animate-scroll2 {
-            animation: scroll2 40s linear infinite;
-          }
-          
-          .animate-scroll:hover,
-          .animate-scroll2:hover {
-            animation-play-state: paused;
-          }
-        `}</style>
+        {/* Call to Action Section */}
+        <div className="bg-gray-200 py-2 px-6 flex justify-center gap-5">
+          <Link href="/resources/gallery" passHref>
+            <button className="flex items-center gap-2 bg-[#012184] hover:bg-blue-900 text-white font-medium py-2 px-6 rounded-lg transition-colors duration-300 shadow-md text-sm">
+              <GalleryHorizontal size={18} />
+              Visit Gallery
+            </button>
+          </Link>
+          <Link href="/resources/video-gallery" passHref>
+            <button className="flex items-center gap-2 bg-[#fcd530] hover:bg-yellow-600 text-[#012184] font-medium py-2 px-6 rounded-lg transition-colors duration-300 shadow-md text-sm">
+              <Video size={18} />
+              Visit Videos
+            </button>
+          </Link>
+        </div>
       </div>
-    </section>
-  )
-}
+    </div>
+  );
+};
+
+export default GallerySection;
