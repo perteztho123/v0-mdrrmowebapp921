@@ -1,6 +1,6 @@
 export default function Footer() {
   return (
-    <footer className="bg-blue-950 text-white mt-10 border-t-4 border-yellow-500 shadow-lg">
+    <footer className="bg-blue-950 text-white border-t-4 border-yellow-500 shadow-lg">
       <div className="container mx-auto px-4 py-10 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
         {/* MDRRMO Contact Info */}
         <div className="text-sm">

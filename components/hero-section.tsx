@@ -2,24 +2,32 @@
 
 import { useState, useEffect } from 'react';
 
+// Handle incident form submission
+const handleIncidentSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  e.preventDefault();
+  // TODO: Add incident submission logic here
+  alert('Incident report submitted!');
+  closeModals();
+};
+
 export default function HeroSection() {
-  const [currentTime, setCurrentTime] = useState(new Date());
+  const [currentTime, setCurrentTime] = useState<Date | null>(null);
   const [backgroundImage, setBackgroundImage] = useState('');
 
   // Update time every second
   useEffect(() => {
+    setCurrentTime(new Date());
     const timer = setInterval(() => {
       setCurrentTime(new Date());
     }, 1000);
-
     return () => clearInterval(timer);
   }, []);
 
   // Set background image based on time
   useEffect(() => {
+    if (!currentTime) return;
     const hour = currentTime.getHours();
     let image = '';
-
     if (hour >= 5 && hour < 7) {
       image = '/images/sunrise.webp';
     } else if (hour >= 7 && hour < 17) {
@@ -29,66 +37,63 @@ export default function HeroSection() {
     } else {
       image = '/images/night.webp';
     }
-
     setBackgroundImage(image);
   }, [currentTime]);
 
   // Format time for display
-  const formatTime = (date) => {
+  const formatTime = (date: Date) => {
     return date.toLocaleTimeString('en-US', {
       timeZone: 'Asia/Manila',
       hour: '2-digit',
       minute: '2-digit',
       second: '2-digit',
-      hour12: true
+      hour12: true,
     });
   };
 
-  // Format date for display
-  const formatDate = (date) => {
+  const formatDate = (date: Date) => {
     return date.toLocaleDateString('en-US', {
       timeZone: 'Asia/Manila',
       weekday: 'long',
       year: 'numeric',
       month: 'long',
-      day: 'numeric'
+      day: 'numeric',
     });
   };
-
-  // Handle form submission
-  const handleIncidentSubmit = (e) => {
-    e.preventDefault();
-    // Show success modal
-    document.getElementById('incident-modal').classList.add('hidden');
-    document.getElementById('success-modal').classList.remove('hidden');
-  };
-
-  // Close modals
   const closeModals = () => {
-    document.getElementById('hotline-modal').classList.add('hidden');
-    document.getElementById('incident-modal').classList.add('hidden');
-    document.getElementById('success-modal').classList.add('hidden');
+    const hotlineModal = document.getElementById('hotline-modal');
+    if (hotlineModal) {
+      hotlineModal.classList.add('hidden');
+    }
+    const incidentModal = document.getElementById('incident-modal');
+    if (incidentModal) {
+      incidentModal.classList.add('hidden');
+    }
+    const successModal = document.getElementById('success-modal');
+    if (successModal) {
+      successModal.classList.add('hidden');
+    }
   };
 
   // Preview image
-  const previewImage = (input) => {
+  const previewImage = (input: HTMLInputElement) => {
     if (input.files && input.files[0]) {
-      const file = input.files[0];
+      const file: File = input.files[0];
       const maxSize = 5 * 1024 * 1024; // 5MB
       
       if (file.size > maxSize) {
-        document.getElementById('upload-error').classList.remove('hidden');
-        document.getElementById('error-message').textContent = 'File size exceeds 5MB limit';
+        document.getElementById('upload-error')!.classList.remove('hidden');
+        document.getElementById('error-message')!.textContent = 'File size exceeds 5MB limit';
         return;
       }
       
       const reader = new FileReader();
-      reader.onload = function(e) {
-        document.getElementById('preview').src = e.target.result;
-        document.getElementById('file-name').textContent = file.name;
-        document.getElementById('file-size').textContent = (file.size / 1024).toFixed(1) + ' KB';
-        document.getElementById('image-preview').classList.remove('hidden');
-        document.getElementById('upload-error').classList.add('hidden');
+      reader.onload = function(e: ProgressEvent<FileReader>) {
+        (document.getElementById('preview') as HTMLImageElement)!.src = e.target!.result as string;
+        document.getElementById('file-name')!.textContent = file.name;
+        document.getElementById('file-size')!.textContent = (file.size / 1024).toFixed(1) + ' KB';
+        document.getElementById('image-preview')!.classList.remove('hidden');
+        document.getElementById('upload-error')!.classList.add('hidden');
       }
       reader.readAsDataURL(file);
     }
@@ -96,34 +101,48 @@ export default function HeroSection() {
 
   // Remove image
   const removeImage = () => {
-    document.getElementById('file-upload').value = '';
-    document.getElementById('image-preview').classList.add('hidden');
+    (document.getElementById('file-upload') as HTMLInputElement).value = '';
+    const imagePreview = document.getElementById('image-preview');
+    if (imagePreview) {
+      imagePreview.classList.add('hidden');
+    }
   };
 
   // Get location
   const getLocation = () => {
     const locationBtn = document.getElementById('location-btn');
+    if (!locationBtn) return;
     locationBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-1"></i> Getting location...';
     
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(
         (position) => {
-          locationBtn.innerHTML = '<i class="fas fa-check mr-1"></i> Location acquired';
-          setTimeout(() => {
-            locationBtn.innerHTML = '<i class="fas fa-location-arrow mr-1"></i> Use My Current Location';
-          }, 2000);
+          if (locationBtn) {
+            locationBtn.innerHTML = '<i class="fas fa-check mr-1"></i> Location acquired';
+            setTimeout(() => {
+              if (locationBtn) {
+                locationBtn.innerHTML = '<i class="fas fa-location-arrow mr-1"></i> Use My Current Location';
+              }
+            }, 2000);
+          }
         },
         (error) => {
-          locationBtn.innerHTML = '<i class="fas fa-exclamation mr-1"></i> Location failed';
-          setTimeout(() => {
-            locationBtn.innerHTML = '<i class="fas fa-location-arrow mr-1"></i> Use My Current Location';
-          }, 2000);
+          if (locationBtn) {
+            locationBtn.innerHTML = '<i class="fas fa-exclamation mr-1"></i> Location failed';
+            setTimeout(() => {
+              if (locationBtn) {
+                locationBtn.innerHTML = '<i class="fas fa-location-arrow mr-1"></i> Use My Current Location';
+              }
+            }, 2000);
+          }
         }
       );
     } else {
       locationBtn.innerHTML = '<i class="fas fa-exclamation mr-1"></i> Not supported';
       setTimeout(() => {
-        locationBtn.innerHTML = '<i class="fas fa-location-arrow mr-1"></i> Use My Current Location';
+        if (locationBtn) {
+          locationBtn.innerHTML = '<i class="fas fa-location-arrow mr-1"></i> Use My Current Location';
+        }
       }, 2000);
     }
   };
@@ -142,15 +161,17 @@ export default function HeroSection() {
       <div className="absolute inset-0 bg-gradient-to-b from-blue-900/30 to-blue-800/30"></div>
       
       {/* Time Card - Top Right Corner */}
-      <div className="absolute top-6 right-6 z-20">
-        <div className="backdrop-blur-lg bg-white/10 border border-white/20 rounded-xl p-4 shadow-xl glass-effect">
-          <div className="text-white text-center">
-            <div className="text-2xl font-bold">{formatTime(currentTime)}</div>
-            <div className="text-sm opacity-80">{formatDate(currentTime)}</div>
-            <div className="text-xs opacity-70 mt-1">Asia/Manila</div>
+      {currentTime && (
+        <div className="absolute top-6 right-6 z-20">
+          <div className="backdrop-blur-lg bg-white/10 border border-white/20 rounded-xl p-4 shadow-xl glass-effect">
+            <div className="text-white text-center">
+              <div className="text-2xl font-bold">{formatTime(currentTime)}</div>
+              <div className="text-sm opacity-80">{formatDate(currentTime)}</div>
+              <div className="text-xs opacity-70 mt-1">Asia/Manila</div>
+            </div>
           </div>
         </div>
-      </div>
+      )}
       
       <div className="container mx-auto px-4 z-10 text-center">
         <h1 className="section-title text-white mb-10 [text-shadow:_2px_2px_4px_rgb(0,0,0,0.8)]">
@@ -162,13 +183,19 @@ export default function HeroSection() {
         </p>
         <div className="flex flex-col sm:flex-row justify-center gap-4">
           <button
-            onClick={() => document.getElementById('hotline-modal').classList.remove('hidden')}
+            onClick={() => {
+              const modal = document.getElementById('hotline-modal');
+              if (modal) modal.classList.remove('hidden');
+            }}
             className="inline-flex items-center justify-center px-8 py-4 bg-gradient-to-r from-accent to-yellow-600 text-primary font-bold rounded-full shadow-lg hover:from-yellow-600 hover:to-yellow-700 transition-all duration-300 transform hover:scale-105 hover:shadow-xl active:scale-95"
           >
             <i className="fas fa-phone-alt mr-2"></i> Emergency Hotline
           </button>
           <button
-            onClick={() => document.getElementById('incident-modal').classList.remove('hidden')}
+            onClick={() => {
+              const modal = document.getElementById('incident-modal');
+              if (modal) modal.classList.remove('hidden');
+            }}
             className="inline-flex items-center justify-center px-8 py-4 bg-gradient-to-r from-red-600 to-red-700 text-white font-bold rounded-full shadow-lg hover:from-red-700 hover:to-red-800 transition-all duration-300 transform hover:scale-105 hover:shadow-xl active:scale-95"
           >
             <i className="fas fa-exclamation-triangle mr-2"></i> Submit an Incident
@@ -284,7 +311,7 @@ export default function HeroSection() {
 
             <div>
               <label htmlFor="incident-description" className="block text-sm font-medium text-gray-700 mb-1">Incident Description</label>
-              <textarea id="incident-description" rows="4" placeholder="Provide a detailed description: what happened, how many people affected, visible risks..." className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"></textarea>
+              <textarea id="incident-description" rows={4} placeholder="Provide a detailed description: what happened, how many people affected, visible risks..." className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"></textarea>
             </div>
 
             {/* Risk Level */}
@@ -511,3 +538,7 @@ export default function HeroSection() {
     </section>
   )
 }
+function closeModals() {
+  throw new Error('Function not implemented.');
+}
+

@@ -16,7 +16,7 @@ import { LinkNode, AutoLinkNode, $createLinkNode } from "@lexical/link"
 import { CodeHighlightNode, CodeNode } from "@lexical/code"
 import { TableCellNode, TableNode, TableRowNode } from "@lexical/table"
 import { $generateHtmlFromNodes } from "@lexical/html"
-import LexicalErrorBoundary from "@lexical/react/LexicalErrorBoundary"
+import { LexicalErrorBoundary } from "@lexical/react/LexicalErrorBoundary"
 import {
   FORMAT_TEXT_COMMAND,
   INDENT_CONTENT_COMMAND,
