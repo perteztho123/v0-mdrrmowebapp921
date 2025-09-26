@@ -5,27 +5,27 @@
 -- DO NOT commit actual values to version control
 
 -- Supabase Configuration
--- SUPABASE_URL=your_supabase_url
--- NEXT_PUBLIC_SUPABASE_URL=your_supabase_url
--- SUPABASE_ANON_KEY=your_anon_key
--- NEXT_PUBLIC_SUPABASE_ANON_KEY=your_anon_key
+-- SUPABASE_URL=https://vebmgpvplgwhdwkvrkcz.supabase.co
+-- NEXT_PUBLIC_SUPABASE_URL=https://vebmgpvplgwhdwkvrkcz.supabase.co
+-- SUPABASE_ANON_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZlYm1ncHZwbGd3aGR3a3Zya2N6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTg3NzMwOTgsImV4cCI6MjA3NDM0OTA5OH0.dcVtzDLGOfj6zD-1sfz1Z6Ku6yUiNq06wXAKCgG04TI
+-- NEXT_PUBLIC_SUPABASE_ANON_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZlYm1ncHZwbGd3aGR3a3Zya2N6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTg3NzMwOTgsImV4cCI6MjA3NDM0OTA5OH0.dcVtzDLGOfj6zD-1sfz1Z6Ku6yUiNq06wXAKCgG04TI
 -- SUPABASE_SERVICE_ROLE_KEY=your_service_role_key
--- SUPABASE_JWT_SECRET=your_jwt_secret
+-- SUPABASE_JWT_SECRET=TNjXHQUvHTRYLLo8+jIOPb8aJdXnZsRAD+lmp4zn9hou9W+mTfYnTCJ6NvuiPd0Btno0fwMlb6RRcPM+qgaT3A==
 
 -- PostgreSQL Database Configuration
--- POSTGRES_URL=your_postgres_url
--- POSTGRES_PRISMA_URL=your_postgres_prisma_url
--- POSTGRES_URL_NON_POOLING=your_postgres_url_non_pooling
--- POSTGRES_HOST=your_postgres_host
--- POSTGRES_USER=your_postgres_user
--- POSTGRES_PASSWORD=your_postgres_password
--- POSTGRES_DATABASE=your_postgres_database
+-- POSTGRES_URL=postgres://postgres.vebmgpvplgwhdwkvrkcz:x58fSaeo660vfHqr@aws-1-ap-southeast-1.pooler.supabase.com:6543/postgres?sslmode=require&supa=base-pooler.x
+-- POSTGRES_PRISMA_URL=postgres://postgres.vebmgpvplgwhdwkvrkcz:x58fSaeo660vfHqr@aws-1-ap-southeast-1.pooler.supabase.com:6543/postgres?sslmode=require&pgbouncer=true
+-- POSTGRES_URL_NON_POOLING=postgres://postgres.vebmgpvplgwhdwkvrkcz:x58fSaeo660vfHqr@aws-1-ap-southeast-1.pooler.supabase.com:5432/postgres?sslmode=require
+-- POSTGRES_HOST=db.vebmgpvplgwhdwkvrkcz.supabase.co
+-- POSTGRES_USER=postgres
+-- POSTGRES_PASSWORD=x58fSaeo660vfHqr
+-- POSTGRES_DATABASE=postgres
 
 -- Cloudinary Configuration (for image/media storage)
--- CLOUDINARY_CLOUD_NAME=your_cloud_name
--- NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME=your_cloud_name
--- CLOUDINARY_API_KEY=your_api_key
--- CLOUDINARY_API_SECRET=your_api_secret
+-- CLOUDINARY_CLOUD_NAME=dedcmctqk
+-- NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME=dedcmctqk
+-- CLOUDINARY_API_KEY=244416163893277
+-- CLOUDINARY_API_SECRET=dD29IrMNxQ230pCeGhIJVzVEqXk
 
 -- Instructions:
 -- 1. Copy this file to your local environment
